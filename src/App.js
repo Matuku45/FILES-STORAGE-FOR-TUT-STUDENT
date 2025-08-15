@@ -43,7 +43,7 @@ function App() {
     }
 
     setUploadedFiles((prev) => [...prev, ...uploaded]);
-    alert("Files uploaded to S3! Copy your IDs to retrieve later.");
+    if (uploaded.length > 0) alert("Files uploaded to S3! Copy your IDs to retrieve later.");
   };
 
   // -------- Fetch file from Flask -> S3 --------
@@ -74,28 +74,34 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
-  // -------- Register user -> DynamoDB --------
+  // -------- Register user -> Django backend --------
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const name = form[0].value;
+    const name = form[0].value.trim();
+    const email = form[1].value.trim();
     const password = form[2].value;
-    setIsLoading(true);
+    const repeatPassword = form[3].value;
+    const agreeTerms = form[4].checked;
 
+    if (!agreeTerms) return alert("You must agree to the Terms of Service.");
+    if (password !== repeatPassword) return alert("Passwords do not match.");
+
+    setIsLoading(true);
     try {
-      const res = await fetch("https://thirty-black-feather-1498.fly.dev/dynamodb/items", {
+      const res = await fetch("https://your-django-backend.com/api/register/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: password, name }),
+        body: JSON.stringify({ name, email, password }),
       });
 
       const data = await res.json();
       if (res.ok) {
-        alert("Registered and saved to DynamoDB!");
-        setCurrentView("dashboard");
+        alert("Registration successful!");
         form.reset();
+        setCurrentView("dashboard"); // Redirect to dashboard
       } else {
-        alert("Error: " + data.error || "An error occurred");
+        alert("Error: " + (data.error || "An error occurred"));
       }
     } catch (err) {
       console.error(err);
@@ -275,9 +281,11 @@ function App() {
               </form>
             </div>
           )}
+        
         </div>
 
-        <footer className="bg-dark text-white text-center py-3 shadow-sm sticky-bottom">
+        {/* Footer */}
+        <footer className="bg-dark text-white text-center py-3 shadow-sm mt-auto">
           Cloud Dashboard &copy; 2025
         </footer>
       </div>
