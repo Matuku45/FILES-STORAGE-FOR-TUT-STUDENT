@@ -68,34 +68,38 @@ function App() {
   };
 
   // -------- Register user -> DynamoDB --------
-  const handleRegisterSubmit = async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const name = form[0].value;
-    const password = form[2].value;
-    setIsLoading(true);
+const handleRegisterSubmit = async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const name = form[0].value;
+  const password = form[2].value;
+  setIsLoading(true);
 
-    try {
-      const res = await fetch("http://127.0.0.1:5000/dynamodb/items", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: password, name }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        alert("Registered and saved to DynamoDB!");
-        setCurrentView("dashboard");
-        form.reset();
-      } else {
-        alert("Error: " + data.error);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Could not connect to server!");
-    } finally {
-      setIsLoading(false);
+  try {
+    // Change the fetch URL to your desired endpoint
+    const res = await fetch("https://thirty-black-feather-1498.fly.dev/dynamodb/items", {
+      method: "POST",  // Keeping POST method as you're adding or updating an item
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: password, name }),
+    });
+
+    const data = await res.json();
+    
+    // Checking if the response is okay
+    if (res.ok) {
+      alert("Registered and saved to DynamoDB!");
+      setCurrentView("dashboard");
+      form.reset();
+    } else {
+      alert("Error: " + data.error || "An error occurred");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Could not connect to server!");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="d-flex vh-100 overflow-hidden">
