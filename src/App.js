@@ -18,11 +18,11 @@ function App() {
 
     setIsLoading(true);
     try {
-      const res = await fetch("https://phillipine.onrender.com/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, agreed_to_terms: agreeTerms }),
-      });
+   const res = await fetch("https://phillipine.onrender.com/register", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ name, email, password, agreed_to_terms: agreeTerms }),
+});
 
       const data = await res.json();
       if (res.ok) {
