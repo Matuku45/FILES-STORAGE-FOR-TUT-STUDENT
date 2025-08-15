@@ -183,7 +183,7 @@ function App() {
                   {isLoading && <span className="spinner-border spinner-border-sm me-2"></span>}
                   Register
                 </button>
-                <button className="btn btn-secondary" type="button" onClick={() => setCurrentView("dashboard")}>Back</button>
+                <button className="btn btn-secondary" type="button" onClick={() => setCurrentView("dashboard")}>Marchele</button>
               </form>
             </div>
           )}
