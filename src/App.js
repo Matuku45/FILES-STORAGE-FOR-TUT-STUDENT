@@ -2,27 +2,27 @@ import React, { useState } from "react";
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
-  const [currentView, setCurrentView] = useState("register"); // or "dashboard"
+  const [currentView, setCurrentView] = useState("register");
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const name = form[0].value.trim();
-    const email = form[1].value.trim();
-    const password = form[2].value;
-    const repeatPassword = form[3].value;
-    const agreeTerms = form[4].checked;
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const password = form.password.value;
+    const repeatPassword = form.repeatPassword.value;
+    const agreeTerms = form.agreeTerms.checked;
 
     if (!agreeTerms) return alert("You must agree to the Terms of Service.");
     if (password !== repeatPassword) return alert("Passwords do not match.");
 
     setIsLoading(true);
     try {
-   const res = await fetch("https://phillipine.onrender.com/register", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ name, email, password, agreed_to_terms: agreeTerms }),
-});
+      const res = await fetch("https://phillipine.onrender.com/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password, agreed_to_terms: agreeTerms }),
+      });
 
       const data = await res.json();
       if (res.ok) {
@@ -44,12 +44,12 @@ function App() {
     <div>
       {currentView === "register" && (
         <form onSubmit={handleRegisterSubmit}>
-          <input type="text" placeholder="Name" required />
-          <input type="email" placeholder="Email" required />
-          <input type="password" placeholder="Password" required />
-          <input type="password" placeholder="Repeat Password" required />
+          <input type="text" name="name" placeholder="Name" required />
+          <input type="email" name="email" placeholder="Email" required />
+          <input type="password" name="password" placeholder="Password" required />
+          <input type="password" name="repeatPassword" placeholder="Repeat Password" required />
           <label>
-            <input type="checkbox" /> I agree to Terms of Service
+            <input type="checkbox" name="agreeTerms" /> I agree to Terms of Service
           </label>
           <button type="submit" disabled={isLoading}>
             {isLoading ? "Registering..." : "Register"}
